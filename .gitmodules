@@ -1,0 +1,3 @@
+[submodule "testrep"]
+	path = testrep
+	url = https://github.com/realead/testrep
