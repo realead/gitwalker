@@ -13,7 +13,11 @@ class GitCommit:
     def checkout(self):
         return self.__rep.checkout(self.__commit_hash)
 
-
+    def get_hash_value(self):
+        return self.__commit_hash
+    
+    def get_title(self):
+        return  self.__title
 
 
 class GitRepository:
@@ -29,14 +33,16 @@ class GitRepository:
             #str to get read of u'...'
             return [str(line.strip()) for line in call]
         
+    def get_commit(self, commit_hash):
+        return GitCommit(commit_hash, self)
+    
     
     def get_branch_commits(self, branch_name):
         command=["log", branch_name, "^master", "--format=%H"]
         commit_hashes=self.__run_command(command, capture_output=True)
-        return [ GitCommit(commit_hash, self) for commit_hash in commit_hashes]
+        return [self.get_commit(commit_hash) for commit_hash in commit_hashes]
         
-     
-        
+            
     def checkout(self, commit_alias):
         self.__run_command(["checkout", commit_alias])
        
@@ -45,10 +51,10 @@ class GitRepository:
         command=["log", "--format=%s", "-n", "1", commit_hash]
         return self.__run_command(command, capture_output=True)[0]
         
+        
     def get_status(self):
         command=["status"]
         return self.__run_command(command, capture_output=True)
         
-        
-        
-        
+
+              
