@@ -9,7 +9,8 @@ class GitRepositoryTester(unittest.TestCase):
     def setUp(self):
         #self.git=gitlib.GitRepository('../.git/modules/testrep')
         self.git=gitlib.GitRepository('../testrep')
- 
+    def tearDown(self):
+        self.git.checkout("master")
     
     def get_hashes(self, branch_name):
         return [hs.get_hash_value() for hs in self.git.get_branch_commits(branch_name)]
@@ -59,8 +60,11 @@ class GitCommitTester(unittest.TestCase):
  
     def setUp(self):
         #self.git=gitlib.GitRepository('../.git/modules/testrep')
-        git=gitlib.GitRepository('../testrep')
-        self.commit=git.get_commit('ff668655dce190ec642d3997fcefb37fa4a83dcb')
+        self.git=gitlib.GitRepository('../testrep')
+        self.commit=self.git.get_commit('ff668655dce190ec642d3997fcefb37fa4a83dcb')
+        
+    def tearDown(self):
+        self.git.checkout("master")
  
           
     def test_commit_hash(self):
@@ -98,6 +102,8 @@ class ShExistenceChecker:
 class GitBranchRunnerTesterBranchC(unittest.TestCase):
     def setUp(self):
         self.runner=gitlib.GitBranchRunner('../testrep', "fileC")
+    def tearDown(self):
+        self.runner.get_repository().checkout("master")
         
     def test_verify_fileC_exists(self):
         bad_commits=self.runner.verify_each_commit(fileC_exists)
@@ -117,6 +123,12 @@ class GitBranchRunnerTesterBranchC(unittest.TestCase):
         bad_commits=self.runner.verify_each_commit(checker)
         self.assertEqual(len(bad_commits), 2) 
         
+    def test_bin_search_fileD(self):
+        checker=ShExistenceChecker("../testrep/fileD.txt")
+        #self.assertRaises(gitlib.GitWalkerError, self.runner.bin_search, checker)
+        with self.assertRaises(gitlib.GitWalkerError) as context:
+            self.runner.bin_search(checker) 
+        self.assertTrue('Already the base is broken, cannot do binary search' in context.exception)
       
       
        
@@ -135,6 +147,8 @@ class ShTextNotExistsChecker:
 class GitBranchRunnerTesterBranchAnotherA(unittest.TestCase):
     def setUp(self):
         self.runner=gitlib.GitBranchRunner('../testrep', "another_fileA")
+    def tearDown(self):
+        self.runner.get_repository().checkout("master")
     
     
     def get_hash_values(self, checker):
@@ -156,7 +170,13 @@ class GitBranchRunnerTesterBranchAnotherA(unittest.TestCase):
         self.assertEqual(bad_commits, [])        
         
         
-              
+            
+    def test_bin_search(self):
+        checker=ShTextNotExistsChecker("../testrep/fileA.txt", "The night is dark and full of terror!")
+        bad_commit=self.runner.bin_search(checker).get_hash_value()
+        self.assertEqual(bad_commit, 'ff668655dce190ec642d3997fcefb37fa4a83dcb')
+        
+                  
              
 if __name__ == '__main__':
     unittest.main()

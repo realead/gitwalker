@@ -107,4 +107,7 @@ class GitBranchRunner:
                 is_bad=next
         
         return self.commits[is_bad]
+        
+    def get_repository(self):
+        return self.rep
                          
