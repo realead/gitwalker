@@ -43,7 +43,7 @@ class GitRepository:
     def get_branch_commits(self, branch_name):
         command=["log", branch_name, "^master", "--format=%H"]
         commit_hashes=self.__run_command(command, capture_output=True)
-        return [self.get_commit(commit_hash) for commit_hash in commit_hashes]
+        return [self.get_commit(commit_hash) for commit_hash in reversed(commit_hashes)]
         
             
     def checkout(self, commit_alias):
