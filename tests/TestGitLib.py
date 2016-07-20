@@ -45,7 +45,11 @@ class GitRepositoryTester(unittest.TestCase):
     def test_get_commit_titel_8edae24a6_from_master(self):
         self.assertEqual( self.git.get_commit_titel('8edae24a6668acbf59192c514319b54f47c97943'), "line 17 for fileA")
         
-
+    
+    def test_get_parent(self):
+        commit=self.git.get_parent_commit('8edae24a6668acbf59192c514319b54f47c97943')
+        self.assertEqual(commit.get_hash_value(), "0a717df9574d236e33d167cdee189f36653aaa73")
+        
 
 class GitCommitTester(unittest.TestCase):
  
@@ -63,6 +67,9 @@ class GitCommitTester(unittest.TestCase):
         self.assertEqual(self.commit.get_title(), 'Okay. This old tale...')
  
 
+    def test_parent_commit(self):
+        parent=self.commit.get_parent()
+        self.assertEqual(parent.get_hash_value(), 'a9a2b56fe46fa25b303cb08b24cfee11c0241003')
 
 
              

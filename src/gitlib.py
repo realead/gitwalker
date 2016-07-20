@@ -18,6 +18,9 @@ class GitCommit:
     
     def get_title(self):
         return  self.__title
+    
+    def get_parent(self):
+        return  self.__rep.get_parent_commit(self.__commit_hash)
 
 
 class GitRepository:
@@ -56,5 +59,10 @@ class GitRepository:
         command=["status"]
         return self.__run_command(command, capture_output=True)
         
-
-              
+        
+    def get_parent_commit(self, commit_hash):
+        command=["log", "--format=%P", "-n", "1", commit_hash]
+        hash_value=self.__run_command(command, capture_output=True)
+        return self.get_commit(hash_value[0])
+           
+           
