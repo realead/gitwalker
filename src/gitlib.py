@@ -65,4 +65,22 @@ class GitRepository:
         hash_value=self.__run_command(command, capture_output=True)
         return self.get_commit(hash_value[0])
            
-           
+
+        
+       
+class GitBranchRunner:
+    def __init__(self, path, branch_name):
+        self.rep=GitRepository(path) 
+        self.commits=self.rep.get_branch_commits(branch_name)
+        
+        
+    def verify_each_commit(self, verifier):
+        bad_commits=[]
+        for commit in self.commits:
+            commit.checkout()
+            if not verifier():
+                bad_commits.append(commit)
+                
+        return bad_commits
+        
+                       

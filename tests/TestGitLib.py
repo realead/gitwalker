@@ -72,6 +72,86 @@ class GitCommitTester(unittest.TestCase):
         self.assertEqual(parent.get_hash_value(), 'a9a2b56fe46fa25b303cb08b24cfee11c0241003')
 
 
+
+
+import os.path
+def fileC_exists():
+    return os.path.isfile("../testrep/fileC.txt") 
+    
+def fileD_exists():
+    return os.path.isfile("../testrep/fileD.txt") 
+    
+class ShExistenceChecker:
+    def __init__(self, file_path):
+        self.path=file_path
+        
+    def __call__(self):
+        output=sh.sh(["-x", "check_file_exists.sh", self.path], _ok_code=[0,1])
+        if output.exit_code==0:
+            return True
+        return False
+       
+class GitBranchRunnerTesterBranchC(unittest.TestCase):
+    def setUp(self):
+        self.runner=gitlib.GitBranchRunner('../testrep', "fileC")
+        
+    def test_verify_fileC_exists(self):
+        bad_commits=self.runner.verify_each_commit(fileC_exists)
+        self.assertEqual(bad_commits, [])
+
+    def test_verify_fileC_exists2(self):
+        checker=ShExistenceChecker("../testrep/fileC.txt")
+        bad_commits=self.runner.verify_each_commit(checker)
+        self.assertEqual(bad_commits, [])
+
+    def test_verify_fileD_exists(self):
+        bad_commits=self.runner.verify_each_commit(fileD_exists)
+        self.assertEqual(len(bad_commits), 2)  
+                    
+    def test_verify_fileD_exists2(self):
+        checker=ShExistenceChecker("../testrep/fileD.txt")
+        bad_commits=self.runner.verify_each_commit(checker)
+        self.assertEqual(len(bad_commits), 2) 
+        
+      
+      
+       
+       
+class ShTextNotExistsChecker:
+    def __init__(self, file_path, searched_string):
+        self.path=file_path
+        self.string=searched_string
+        
+    def __call__(self):
+        output=sh.sh(["line_in_file_exists.sh", self.path, self.string], _ok_code=[0,1])
+        if output.exit_code==0:
+            return False
+        return True       
+       
+class GitBranchRunnerTesterBranchAnotherA(unittest.TestCase):
+    def setUp(self):
+        self.runner=gitlib.GitBranchRunner('../testrep', "another_fileA")
+    
+    
+    def get_hash_values(self, checker):
+        bad_commits=self.runner.verify_each_commit(checker)
+        return [com.get_hash_value() for com in bad_commits]
+        
+        
+    def test_verify_line_nonexisting(self):
+        checker=ShTextNotExistsChecker("../testrep/fileA.txt", "The night is dark and full of terror!")
+        bad_commits=self.get_hash_values(checker)
+        self.assertEqual(bad_commits, ['9383283b251a8497ec90a7bb13ddd188518d8572',
+                                       '704c0a1c4a2a1db2eac3be198e11f0873b72b451',
+                                       'ff668655dce190ec642d3997fcefb37fa4a83dcb'])
+ 
+    def test_verify_line_not_there(self):
+        checker=ShTextNotExistsChecker("../testrep/fileA.txt", "I do not exist")
+        bad_commits=self.runner.verify_each_commit(checker)
+        self.assertEqual(bad_commits, [])        
+        
+        
+              
              
 if __name__ == '__main__':
     unittest.main()
