@@ -53,6 +53,21 @@ class GitRepository:
 def get_original_branch_view(path, branch_name, base_branch_name="master"):
     repo=GitRepository(path)
     commits=repo.get_branch_commits(branch_name, base_branch_name)
-    base=commits[0].get_parent() if commits else None
-    return GitBranchView(base, commits)
+    return GitBranchView(commits)
+    
+def get_subbranch_view(path, first_hash, last_hash):
+    repo=GitRepository(path)
+    commits=[]
+    
+    first_commit=repo.get_commit(first_hash)
+    current_commit=repo.get_commit(last_hash)    
+    while True:
+        if current_commit is None:
+            raise Exception("first_hash is not a precessor of the last_hash")
+        commits.append(current_commit)
+        if current_commit.get_hash_value()==first_commit.get_hash_value():
+            break
+        current_commit=current_commit.get_parent()
+    commits.reverse()
+    return GitBranchView(commits)
                

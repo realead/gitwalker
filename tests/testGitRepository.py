@@ -60,6 +60,24 @@ class GitRepositoryTester(unittest.TestCase):
         self.assertEqual(commit.get_hash_value(), "0a717df9574d236e33d167cdee189f36653aaa73")
         
         
+    def test_get_subbranch_view(self):
+        view=gwlib.grepo.get_subbranch_view('../testrep', 'd3be8125c4f0f1134ed741c7c212b22e1c79d776', '026176a9fccbe01acd1995fc26db7aa1ae6e8297')
+        self.assertIsNone(view.get_base())
+        hashes=[hs.get_hash_value() for hs in view.commits]
+        expected=  ['d3be8125c4f0f1134ed741c7c212b22e1c79d776',
+                    '74ef69cfef270cba65e5f98cca1070fd8d78918c',
+                    '32bb13022ed7575888692d911ec211e6b4e0caca',
+                    'bf280808044c93ceb1c97dcc90cd8e113159a127',
+                    '0a717df9574d236e33d167cdee189f36653aaa73',
+                    '8edae24a6668acbf59192c514319b54f47c97943',
+                    'd10b346013a78e8c3e1240c65ede255c50b02f9f',
+                    '97b8bf131de4ebca95b9582ec8eba6133926d43b',
+                    '83a345517f68a451cedd56e7373a8436f6645e4c',
+                    '026176a9fccbe01acd1995fc26db7aa1ae6e8297']
+        self.assertEqual(hashes, expected)
+        
+        
+        
 
 if __name__ == '__main__':
     unittest.main()
