@@ -4,6 +4,7 @@ import sh
 import sys
 sys.path.append('../src')
 
+import gwlib.grepo
 from gwlib.grepo import GitRepository
 from gwlib.grunner import GitBranchRunner
 from gwlib.grunner import GitWalkerError
@@ -18,7 +19,8 @@ class GitRepositoryTester(unittest.TestCase):
         self.git.checkout("master")
     
     def get_hashes(self, branch_name):
-        return [hs.get_hash_value() for hs in self.git.get_branch_commits(branch_name)]
+        view=gwlib.grepo.get_original_branch_view('../testrep', branch_name)
+        return [hs.get_hash_value() for hs in view.commits]
           
     def test_empty_fileB_branch(self):
         self.assertEqual( self.get_hashes("fileB"), [])

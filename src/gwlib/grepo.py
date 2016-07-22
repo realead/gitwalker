@@ -1,6 +1,7 @@
 import sh
 
 from gcommit import GitCommit
+from gbranch import GitBranchView
 
 class GitRepository:
     def __init__(self, path):
@@ -19,8 +20,8 @@ class GitRepository:
         return GitCommit(commit_hash, self)
     
     
-    def get_branch_commits(self, branch_name):
-        command=["log", branch_name, "^master", "--format=%H"]
+    def get_branch_commits(self, branch_name, base_branch_name="master"):
+        command=["log", branch_name, "^"+base_branch_name, "--format=%H"]
         commit_hashes=self.__run_command(command, capture_output=True)
         return [self.get_commit(commit_hash) for commit_hash in reversed(commit_hashes)]
         
@@ -43,3 +44,12 @@ class GitRepository:
         command=["log", "--format=%P", "-n", "1", commit_hash]
         hash_value=self.__run_command(command, capture_output=True)
         return self.get_commit(hash_value[0])
+        
+        
+        
+def get_original_branch_view(path, branch_name, base_branch_name="master"):
+    repo=GitRepository(path)
+    commits=repo.get_branch_commits(branch_name, base_branch_name)
+    base=commits[0].get_parent() if commits else None
+    return GitBranchView(base, commits)
+               
