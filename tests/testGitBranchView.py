@@ -7,6 +7,16 @@ from gwlib.grepo import get_original_branch_view as gbv
 from gwlib.grepo import GitRepository
 
  
+def get_branch_view(branch_name): 
+    return gbv('../testrep', branch_name)
+ 
+def get_hashes(view):
+    return [hs.get_hash_value() for hs in view.commits]
+     
+def get_hashes_from_name(branch_name):
+    return get_hashes(get_branch_view(branch_name))
+        
+        
 class GitBranchViewTester(unittest.TestCase):
         
     @classmethod
@@ -14,12 +24,9 @@ class GitBranchViewTester(unittest.TestCase):
         git=GitRepository('../testrep')
         git.checkout("master")
     
-    def get_hashes(self, branch_name):
-        view=gbv('../testrep', branch_name)
-        return [hs.get_hash_value() for hs in view.commits]
           
     def test_empty_fileB_branch(self):
-        self.assertEqual( self.get_hashes("fileB"), [])
+        self.assertEqual( get_hashes_from_name("fileB"), [])
 
 
     def test_commits_afA(self):
@@ -29,7 +36,7 @@ class GitBranchViewTester(unittest.TestCase):
                                                              'a9a2b56fe46fa25b303cb08b24cfee11c0241003',
                                                              'fad7f7ff132f547deb60e56c10d275fac63d7e1d']
         expected.reverse()  
-        self.assertEqual( self.get_hashes("another_fileA"), expected)
+        self.assertEqual( get_hashes_from_name("another_fileA"), expected)
         
     def test_commits_afB(self):
         expected=['5f7cef49c21e7f8673db5f4663a8ae4784674902',
@@ -39,12 +46,22 @@ class GitBranchViewTester(unittest.TestCase):
                                                                  '97b8bf131de4ebca95b9582ec8eba6133926d43b',
                                                                  'd10b346013a78e8c3e1240c65ede255c50b02f9f']
         expected.reverse()  
-        self.assertEqual( self.get_hashes("alternative_fileB"), expected)
+        self.assertEqual( get_hashes_from_name("alternative_fileB"), expected)
                 
     def test_commits_fC(self):
-        self.assertEqual( self.get_hashes("fileC"), ['1b72d3488b61253587310e835cb3f1f82079b0e2', 'de94a66ae05b41c65bf2174ba52eb65128205732'])
+        self.assertEqual( get_hashes_from_name("fileC"), ['1b72d3488b61253587310e835cb3f1f82079b0e2', 'de94a66ae05b41c65bf2174ba52eb65128205732'])
+        
+    def test_base_fC(self):
+        view=get_branch_view("fileC")
+        self.assertEqual("8edae24a6668acbf59192c514319b54f47c97943", view.get_base().get_hash_value())
 
- 
+    def test_base_fB(self):
+        view=get_branch_view("fileB")
+        self.assertIsNone(view.get_base()) 
+        
+    def test_base_afA(self):
+        view=get_branch_view("another_fileA")
+        self.assertEqual("74ef69cfef270cba65e5f98cca1070fd8d78918c", view.get_base().get_hash_value())
         
              
 if __name__ == '__main__':

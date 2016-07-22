@@ -5,5 +5,6 @@ class GitBranchView:
         self.base=basecommit
         self.commits=branch_commits
     
-    
+    def get_base(self):
+        return self.base
                          
