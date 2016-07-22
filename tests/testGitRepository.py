@@ -1,5 +1,4 @@
 import unittest
-import sh
 
 import sys
 sys.path.append('../src')
