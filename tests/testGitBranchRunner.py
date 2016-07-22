@@ -6,7 +6,7 @@ sys.path.append('../src')
 from gwlib.grepo import get_original_branch_view as gbv
 from gwlib.grepo import GitRepository
 from gwlib.grunner import GitBranchRunner
-from gwlib.grunner import GitWalkerError
+from gwlib.gerror import GitWalkerError
 
 
 import os.path

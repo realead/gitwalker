@@ -1,10 +1,8 @@
 
 from grepo import GitRepository
 from gbranch import GitBranchView
-
-class GitWalkerError(Exception):
-    pass           
-        
+from gerror import GitWalkerError
+    
        
 class GitBranchRunner:
     def __init__(self, branch_view):

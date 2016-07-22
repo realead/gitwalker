@@ -2,6 +2,7 @@ import sh
 
 from gcommit import GitCommit
 from gbranch import GitBranchView
+from gerror import GitWalkerError
 
 class GitRepository:
     def __init__(self, path):
@@ -35,8 +36,7 @@ class GitRepository:
         
     def get_commit_titel(self, commit_hash):
         command=["log", "--format=%s", "-n", "1", commit_hash]
-        return self.__run_command(command, capture_output=True)[0]
-        
+        return self.__run_command(command, capture_output=True)[0]     
         
     def get_status(self):
         command=["status"]
@@ -63,7 +63,7 @@ def get_subbranch_view(path, first_hash, last_hash):
     current_commit=repo.get_commit(last_hash)    
     while True:
         if current_commit is None:
-            raise Exception("first_hash is not a precessor of the last_hash")
+            raise GitWalkerError("first_hash is not a predecessor of the last_hash")
         commits.append(current_commit)
         if current_commit.get_hash_value()==first_commit.get_hash_value():
             break

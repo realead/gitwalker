@@ -5,6 +5,7 @@ sys.path.append('../src')
 
 import gwlib.grepo
 from gwlib.grepo import GitRepository
+from gwlib.gerror import GitWalkerError
 
  
 class GitRepositoryTester(unittest.TestCase):
@@ -75,9 +76,17 @@ class GitRepositoryTester(unittest.TestCase):
                     '83a345517f68a451cedd56e7373a8436f6645e4c',
                     '026176a9fccbe01acd1995fc26db7aa1ae6e8297']
         self.assertEqual(hashes, expected)
+
+      
+        
+    def test_get_subbranch_view_wrong(self):
+        with self.assertRaises(GitWalkerError) as context:
+            gwlib.grepo.get_subbranch_view('../testrep', 'ff668655dce190ec642d3997fcefb37fa4a83dcb', '1b72d3488b61253587310e835cb3f1f82079b0e2')
+        
+        self.assertEqual("first_hash is not a predecessor of the last_hash", context.exception.message)
         
         
-        
+              
 
 if __name__ == '__main__':
     unittest.main()

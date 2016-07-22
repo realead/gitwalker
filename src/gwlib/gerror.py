@@ -1,0 +1,4 @@
+
+class GitWalkerError(Exception):
+    pass           
+        
