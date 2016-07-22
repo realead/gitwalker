@@ -22,6 +22,11 @@ class GitCommitTester(unittest.TestCase):
         self.assertEqual( commit.get_hash_value(), 'ff668655dce190ec642d3997fcefb37fa4a83dcb')
 
 
+    def test_commit_hash_half(self):
+        commit=self.git.get_commit('ff668655dce190ec642')
+        self.assertEqual( commit.get_hash_value(), 'ff668655dce190ec642d3997fcefb37fa4a83dcb')
+        
+
     def test_commits_title(self):
         commit=self.git.get_commit('ff668655dce190ec642d3997fcefb37fa4a83dcb')
         self.assertEqual(commit.get_title(), 'Okay. This old tale...')

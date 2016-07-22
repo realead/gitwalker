@@ -33,6 +33,9 @@ class GitRepository:
     def checkout(self, commit_alias):
         self.__run_command(["checkout", commit_alias])
        
+    def get_commit_hash(self, commit_hash):
+        command=["log", "--format=%H", "-n", "1", commit_hash]
+        return self.__run_command(command, capture_output=True)[0]  
         
     def get_commit_titel(self, commit_hash):
         command=["log", "--format=%s", "-n", "1", commit_hash]

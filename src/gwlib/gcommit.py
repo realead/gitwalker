@@ -2,8 +2,8 @@
 
 class GitCommit:
     def __init__(self, commit_hash, repository):
-        self.__commit_hash=commit_hash
         self.__rep=repository
+        self.__commit_hash=self.__rep.get_commit_hash(commit_hash)
         self.__title=self.__rep.get_commit_titel(commit_hash)
         
     def to_string(self, hash_len=7):
