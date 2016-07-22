@@ -1,6 +1,9 @@
 import unittest
 import sh
 
+import sys
+sys.path.append('../src')
+
 import imp
 gitlib = imp.load_source('gitlib', '../src/gitlib.py')
  
