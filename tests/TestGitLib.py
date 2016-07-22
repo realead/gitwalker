@@ -4,14 +4,16 @@ import sh
 import sys
 sys.path.append('../src')
 
-import imp
-gitlib = imp.load_source('gitlib', '../src/gitlib.py')
+from gwlib.grepo import GitRepository
+from gwlib.grunner import GitBranchRunner
+from gwlib.grunner import GitWalkerError
+
  
 class GitRepositoryTester(unittest.TestCase):
  
     def setUp(self):
         #self.git=gitlib.GitRepository('../.git/modules/testrep')
-        self.git=gitlib.GitRepository('../testrep')
+        self.git=GitRepository('../testrep')
     def tearDown(self):
         self.git.checkout("master")
     
@@ -63,7 +65,7 @@ class GitCommitTester(unittest.TestCase):
  
     def setUp(self):
         #self.git=gitlib.GitRepository('../.git/modules/testrep')
-        self.git=gitlib.GitRepository('../testrep')
+        self.git=GitRepository('../testrep')
         self.commit=self.git.get_commit('ff668655dce190ec642d3997fcefb37fa4a83dcb')
         
     def tearDown(self):
@@ -104,7 +106,7 @@ class ShExistenceChecker:
        
 class GitBranchRunnerTesterBranchC(unittest.TestCase):
     def setUp(self):
-        self.runner=gitlib.GitBranchRunner('../testrep', "fileC")
+        self.runner=GitBranchRunner('../testrep', "fileC")
     def tearDown(self):
         self.runner.get_repository().checkout("master")
         
@@ -129,7 +131,7 @@ class GitBranchRunnerTesterBranchC(unittest.TestCase):
     def test_bin_search_fileD(self):
         checker=ShExistenceChecker("../testrep/fileD.txt")
         #self.assertRaises(gitlib.GitWalkerError, self.runner.bin_search, checker)
-        with self.assertRaises(gitlib.GitWalkerError) as context:
+        with self.assertRaises(GitWalkerError) as context:
             self.runner.bin_search(checker) 
         self.assertTrue('Already the base is broken, cannot do binary search' in context.exception)
       
@@ -149,7 +151,7 @@ class ShTextNotExistsChecker:
        
 class GitBranchRunnerTesterBranchAnotherA(unittest.TestCase):
     def setUp(self):
-        self.runner=gitlib.GitBranchRunner('../testrep', "another_fileA")
+        self.runner=GitBranchRunner('../testrep', "another_fileA")
     def tearDown(self):
         self.runner.get_repository().checkout("master")
     

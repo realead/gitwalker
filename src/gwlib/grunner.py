@@ -1,5 +1,5 @@
 
-from gwlib.grepo import GitRepository
+from grepo import GitRepository
 
 class GitWalkerError(Exception):
     pass           
