@@ -17,7 +17,10 @@ class GitRepository:
             return [str(line.strip()) for line in call]
         
     def get_commit(self, commit_hash):
-        return GitCommit(commit_hash, self)
+        if commit_hash:
+            return GitCommit(commit_hash, self)
+        else:
+            return None
     
     
     def get_branch_commits(self, branch_name, base_branch_name="master"):

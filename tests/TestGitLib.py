@@ -62,32 +62,7 @@ class GitRepositoryTester(unittest.TestCase):
         commit=self.git.get_parent_commit('8edae24a6668acbf59192c514319b54f47c97943')
         self.assertEqual(commit.get_hash_value(), "0a717df9574d236e33d167cdee189f36653aaa73")
         
-
-class GitCommitTester(unittest.TestCase):
- 
-    def setUp(self):
-        #self.git=gitlib.GitRepository('../.git/modules/testrep')
-        self.git=GitRepository('../testrep')
-        self.commit=self.git.get_commit('ff668655dce190ec642d3997fcefb37fa4a83dcb')
         
-    def tearDown(self):
-        self.git.checkout("master")
- 
-          
-    def test_commit_hash(self):
-        self.assertEqual( self.commit.get_hash_value(), 'ff668655dce190ec642d3997fcefb37fa4a83dcb')
-
-
-    def test_commits_title(self):
-        self.assertEqual(self.commit.get_title(), 'Okay. This old tale...')
- 
-
-    def test_parent_commit(self):
-        parent=self.commit.get_parent()
-        self.assertEqual(parent.get_hash_value(), 'a9a2b56fe46fa25b303cb08b24cfee11c0241003')
-
-
-
 
 import os.path
 def fileC_exists():
