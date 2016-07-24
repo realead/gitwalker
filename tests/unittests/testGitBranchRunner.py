@@ -4,6 +4,7 @@ import sys
 sys.path.append('../src')
 
 from gwlib.grepo import get_original_branch_view as gbv
+from gwlib.grepo import get_subbranch_view as gsv
 from gwlib.grepo import GitRepository
 from gwlib.grunner import GitBranchRunner
 from gwlib.gerror import GitWalkerError
@@ -112,4 +113,11 @@ class GitBranchRunnerTesterBranchAnotherA(unittest.TestCase):
         self.assertEqual(bad_commit, 'ff668655dce190ec642d3997fcefb37fa4a83dcb')
         
                   
-             
+    def test_bin_search_from_initional_commit(self):
+       runner=GitBranchRunner(gsv('../testrep', 'd3be8125c4f', '9383283b251a8497'))
+       checker=ShTextNotExistsChecker("../testrep/fileA.txt", "The night is dark and full of terror!")
+       bad_commit=runner.bin_search(checker).get_hash_value()
+       self.assertEqual(bad_commit, 'ff668655dce190ec642d3997fcefb37fa4a83dcb')
+       
+       
+                  

@@ -21,11 +21,21 @@ class GitBranchRunner:
         return bad_commits
         
     def bin_search(self, verifier):
-        if not self.__verify_commit(self.view.get_base(), verifier):
-            raise GitWalkerError("Already the base is broken, cannot do binary search")
+        #start of the searched range:
+        base=self.view.get_base()
+        if base is None:
+            if self.__verify_commit(self.view.commits[0], verifier):
+                is_ok=0
+            else:
+                return self.view.commits[0]
+        else:
+            if not self.__verify_commit(self.view.get_base(), verifier):
+                raise GitWalkerError("Already the base is broken, cannot do binary search")
+            is_ok=-1
+            
+        #end of the searched range:  
         if self.__verify_commit(self.view.commits[-1], verifier):
             raise GitWalkerError("The last commit is Ok, cannot do binary search")
-        is_ok=-1
         is_bad=len(self.view.commits)-1
         
         while is_bad-is_ok>1:
