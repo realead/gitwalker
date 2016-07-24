@@ -23,7 +23,7 @@ class ShExistenceChecker:
         self.path=file_path
         
     def __call__(self):
-        output=sh.sh(["-x", "check_file_exists.sh", self.path], _ok_code=[0,1])
+        output=sh.sh(["-x", "scripts/check_file_exists.sh", self.path], _ok_code=[0,1])
         if output.exit_code==0:
             return True
         return False
@@ -71,7 +71,7 @@ class ShTextNotExistsChecker:
         self.string=searched_string
         
     def __call__(self):
-        output=sh.sh(["line_in_file_exists.sh", self.path, self.string], _ok_code=[0,1])
+        output=sh.sh(["scripts/line_in_file_exists.sh", self.path, self.string], _ok_code=[0,1])
         if output.exit_code==0:
             return False
         return True       
