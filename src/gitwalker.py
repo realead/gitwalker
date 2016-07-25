@@ -59,6 +59,12 @@ try:
         if bad_hashes:
             print "\n".join([bad.get_hash_value()+":"+bad.get_title() for bad in bad_hashes])
             exit(1)
+    elif args.a=="foreach":
+        bad_hashes=runner.verify_each_commit(exe, stop_at_first_error=True)
+        if bad_hashes:
+            bad=bad_hashes[0]
+            print bad.get_hash_value()+":"+bad.get_title()
+            exit(1)
     elif args.a=="binsearch":
         bad_hash=runner.bin_search(exe)
         print "broken with commit:", bad_hash.get_hash_value(),":", bad_hash.get_title()

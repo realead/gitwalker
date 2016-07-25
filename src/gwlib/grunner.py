@@ -12,11 +12,13 @@ class GitBranchRunner:
         commit.checkout()
         return True if verifier() else False  
         
-    def verify_each_commit(self, verifier):
+    def verify_each_commit(self, verifier, stop_at_first_error=False):
         bad_commits=[]
         for commit in self.view.commits:
             if not self.__verify_commit(commit, verifier):
                 bad_commits.append(commit)
+                if stop_at_first_error:
+                    break
                 
         return bad_commits
         

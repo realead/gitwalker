@@ -87,8 +87,8 @@ class GitBranchRunnerTesterBranchAnotherA(unittest.TestCase):
         git.checkout("master")
     
     
-    def get_hash_values(self, checker):
-        bad_commits=self.runner.verify_each_commit(checker)
+    def get_hash_values(self, checker, stop=False):
+        bad_commits=self.runner.verify_each_commit(checker, stop_at_first_error=stop)
         return [com.get_hash_value() for com in bad_commits]
         
         
@@ -99,7 +99,13 @@ class GitBranchRunnerTesterBranchAnotherA(unittest.TestCase):
                                        '704c0a1c4a2a1db2eac3be198e11f0873b72b451',
                                        '9383283b251a8497ec90a7bb13ddd188518d8572'
                                        ])
- 
+                                       
+    def test_verify_line_nonexisting_stop_first_error(self):
+        checker=ShTextNotExistsChecker("../testrep/fileA.txt", "The night is dark and full of terror!")
+        bad_commits=self.get_hash_values(checker, stop=True)
+        self.assertEqual(bad_commits, ['ff668655dce190ec642d3997fcefb37fa4a83dcb'])
+        
+        
     def test_verify_line_not_there(self):
         checker=ShTextNotExistsChecker("../testrep/fileA.txt", "I do not exist")
         bad_commits=self.runner.verify_each_commit(checker)
