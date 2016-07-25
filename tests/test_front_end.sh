@@ -57,7 +57,7 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f -l 83a34551
 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 97b8bf131de4 -l 026176a9fccb" "83a345517f68a451cedd56e7373a8436f6645e4c:actually I did\n026176a9fccbe01acd1995fc26db7aa1ae6e8297:I would rather prefer the beatles" verify_two_last_broken 
 
-
+verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b fileB" "" none_broken
 
 ## binsearch:
 
@@ -71,7 +71,7 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 83a345517f6 -l 83a34551
 
 
 #clean up - setting test repository to the master again:
-git -C $GIT_REP checkout master
+git -C $GIT_REP checkout master > /dev/null 2>&1
 
 
 
