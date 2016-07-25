@@ -12,7 +12,7 @@ verify_error_output(){
     ERROR_MESSAGE=$($GIT_WALKER -g $GIT_REP $OPTIONS 2>&1 1>/dev/null)
     
     if [ "$ERROR_MESSAGE" != "$EXPECTED" ]; then
-        echo "Error in $3: expected [$EXPECTED] vs [$ERROR_MESSAGE]"
+        echo "\nError in $3: expected [$EXPECTED] vs [$ERROR_MESSAGE]\n"
         failed_test_cnt=$((failed_test_cnt+1))
     fi
     test_cnt=$((test_cnt+1))
@@ -25,7 +25,7 @@ verify_std_output(){
     OUTPUT=$($GIT_WALKER -g $GIT_REP $OPTIONS)
     
     if [ "$OUTPUT" != "$EXPECTED" ]; then
-        echo "Error in $3: expected [$EXPECTED] vs [$OUTPUT]"
+        echo "\nError in $3: expected [$EXPECTED] vs [$OUTPUT]\n"
         failed_test_cnt=$((failed_test_cnt+1))
     fi
     test_cnt=$((test_cnt+1))
@@ -48,6 +48,9 @@ verify_error_output "-s scripts/dreamer_not_in_fileB.sh -f 026176a9fcc -l 5f7cef
 verify_error_output "-s scripts/dreamer_not_in_fileB.sh -f 74ef69cfef -l 97b8bf131d -a binsearch" "Error: The last commit is Ok, cannot do binary search" no_one_broken
 
 
+verify_error_output "-s scripts/dreamer_not_in_fileB.exe -f 74ef69cfef -l 97b8bf131d -a binsearch" "Error: Unknown script language. Only *.sh and *.py can be processed" unknown_script
+
+
 
 
 ## verify 
@@ -57,9 +60,8 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f -l 83a34551
 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 97b8bf131de4 -l 026176a9fccb" "83a345517f68a451cedd56e7373a8436f6645e4c:actually I did\n026176a9fccbe01acd1995fc26db7aa1ae6e8297:I would rather prefer the beatles" verify_two_last_broken 
 
-verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b fileB" "" none_broken
-
-
+verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b fileB" "" verify_none_in_the_branch
+verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f0 -l ad0d8206159de -a foreach" "" verify_none_broken
 
 
 ## foreach:
@@ -77,7 +79,6 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f0 -l ad0d820
 
 
 ## binsearch:
-
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b alternative_fileB  -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" binsearch_branch_afB 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f -l 83a345517f6  -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" binsearch_last_commit_broken 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 97b8bf131de4 -l 026176a9fccb -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" binsearch_two_last_broken 
@@ -86,7 +87,10 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 83a345517f6 -l 5f7cef49
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 83a345517f6 -l 83a345517f6 -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" only_one_broken
 
 
-
+#python:
+verify_std_output "-s scripts/dreamer_not_in_fileB.py -f 97b8bf131de4 -l 026176a9fccb" "83a345517f68a451cedd56e7373a8436f6645e4c:actually I did\n026176a9fccbe01acd1995fc26db7aa1ae6e8297:I would rather prefer the beatles" python_verify_two_last_broken 
+verify_std_output "-s scripts/dreamer_not_in_fileB.py -b fileB" "" python_verify_none_in_the_branch
+verify_std_output "-s scripts/dreamer_not_in_fileB.py -f d3be8125c4f0 -l ad0d8206159de -a foreach" "" python_verify_none_broken
 
 
 #clean up - setting test repository to the master again:

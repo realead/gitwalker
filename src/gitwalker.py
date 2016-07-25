@@ -1,11 +1,18 @@
 import sh
+from gwlib.gerror import GitWalkerError
 
 class Executor:
     def __init__(self, path):
         self.path=path
     
     def __call__(self):
-        output=sh.sh(self.path, _ok_code=[0,1])
+        if self.path.endswith(".sh"):
+            output=sh.sh(self.path, _ok_code=[0,1])
+        elif self.path.endswith(".py"):
+            output=sh.python(self.path, _ok_code=[0,1])
+        else:
+            raise GitWalkerError("Unknown script language. Only *.sh and *.py can be processed")
+               
         if output.exit_code==0:
             return True
         return False
@@ -34,7 +41,6 @@ args = parser.parse_args()
 import sys
 import gwlib.grepo as gitrep
 from gwlib.grunner import GitBranchRunner
-from gwlib.gerror import GitWalkerError
 
 try:
     #obtaining the view of the branch:
