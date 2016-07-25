@@ -34,36 +34,39 @@ args = parser.parse_args()
 import sys
 import gwlib.grepo as gitrep
 from gwlib.grunner import GitBranchRunner
+from gwlib.gerror import GitWalkerError
 
+try:
+    #obtaining the view of the branch:
+    if args.b is not None:
+         if args.f is not None or args.l is not None:
+            print >>  sys.stderr, "if branch name is given, start and end commits must not be given"
+            exit(2)
+         view=gitrep.get_original_branch_view(args.g, args.b)
+    else:
+        if args.f is None or args.l is None:
+           print >>  sys.stderr, "if branch name is not given, both start and end commits must be given"
+           exit(2)
+        view=gitrep.get_subbranch_view(args.g, args.f, args.l)
+            
 
-#obtaining the view of the branch:
-if args.b is not None:
-     if args.f is not None or args.l is not None:
-        print >>  sys.stderr, "if branch name is given, start and end commits must not be given"
-        exit(2)
-     view=gitrep.get_original_branch_view(args.g, args.b)
-else:
-    if args.f is None or args.l is None:
-       print >>  sys.stderr, "if branch name is not given, both start and end commits must be given"
-       exit(2)
-    view=gitrep.get_subbranch_view(args.g, args.f, args.l)
-        
+    #run the walker
+    runner=GitBranchRunner(view)
 
-#run the walker
-runner=GitBranchRunner(view)
-
-exe=Executor(args.s)
-if args.a=="verify":
-    bad_hashes=runner.verify_each_commit(exe)
-    if bad_hashes:
-        print "\n".join([bad.get_hash_value()+":"+bad.get_title() for bad in bad_hashes])
-        exit(1)
-elif args.a=="binsearch":
-    bad_hash=runner.bin_search(exe)
-    print "broken with commit:", bad_hash.get_hash_value(),":", bad_hash.get_title()
-else:
-    print >> sys.stderr, "not implemented action", args.a
-    exit(2)               
+    exe=Executor(args.s)
+    if args.a=="verify":
+        bad_hashes=runner.verify_each_commit(exe)
+        if bad_hashes:
+            print "\n".join([bad.get_hash_value()+":"+bad.get_title() for bad in bad_hashes])
+            exit(1)
+    elif args.a=="binsearch":
+        bad_hash=runner.bin_search(exe)
+        print "broken with commit:", bad_hash.get_hash_value(),":", bad_hash.get_title()
+    else:
+        print >> sys.stderr, "not implemented action", args.a
+        exit(2)               
     
-    
+except GitWalkerError as e:
+    print >> sys.stderr, "Error:", e.message
+    exit(2)  
            

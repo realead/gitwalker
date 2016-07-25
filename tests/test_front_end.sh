@@ -43,6 +43,10 @@ verify_error_output "-s scripts/dreamer_not_in_fileB.sh -f 3412322" "if branch n
 verify_error_output "-s scripts/dreamer_not_in_fileB.sh -l 3412322" "if branch name is not given, both start and end commits must be given" only_last_given
 
 
+verify_error_output "-s scripts/dreamer_not_in_fileB.sh -l ff668655dce190 -f 026176a9fc" "Error: first_hash is not a predecessor of the last_hash" not_on_the same_line
+
+
+
 
 ## verify 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b alternative_fileB" "83a345517f68a451cedd56e7373a8436f6645e4c:actually I did\n026176a9fccbe01acd1995fc26db7aa1ae6e8297:I would rather prefer the beatles\nefa218e67b784161590f9cdd5bc61b1eaf527551:not my favorite, but why not?\n5f7cef49c21e7f8673db5f4663a8ae4784674902:You know me real good" verify_branch_afB 
