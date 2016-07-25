@@ -48,8 +48,12 @@ class GitRepository:
         
     def get_parent_commit(self, commit_hash):
         command=["log", "--format=%P", "-n", "1", commit_hash]
-        hash_value=self.__run_command(command, capture_output=True)
-        return self.get_commit(hash_value[0])
+        parent_hashes=self.__run_command(command, capture_output=True)[0]
+        if parent_hashes:
+            first_parent_hash=parent_hashes.split()[0]#for merged commit take just the first parent
+        else:
+            first_parent_hash=""
+        return self.get_commit(first_parent_hash)
         
         
         

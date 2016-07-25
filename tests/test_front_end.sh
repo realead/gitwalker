@@ -69,7 +69,9 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f -l 83a34551
 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 97b8bf131de4 -l 026176a9fccb -a foreach" "83a345517f68a451cedd56e7373a8436f6645e4c:actually I did" foreach_two_last_broken 
 
-verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b fileB -a foreach" "" foreach_none_broken
+verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b fileB -a foreach" "" foreach_none_in_the_branch
+
+verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f0 -l ad0d8206159de -a foreach" "" foreach_none_broken
 
 
 
@@ -82,6 +84,7 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 97b8bf131de4 -l 026176a
 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 83a345517f6 -l 5f7cef49c21 -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" first_broken 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 83a345517f6 -l 83a345517f6 -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" only_one_broken
+
 
 
 

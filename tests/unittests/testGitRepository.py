@@ -60,6 +60,11 @@ class GitRepositoryTester(unittest.TestCase):
         commit=self.git.get_parent_commit('8edae24a6668acbf59192c514319b54f47c97943')
         self.assertEqual(commit.get_hash_value(), "0a717df9574d236e33d167cdee189f36653aaa73")
         
+     
+    def test_get_parent_of_merge(self):
+        commit=self.git.get_parent_commit('ad0d8206159de6955f18144e753f281a0f22124a')
+        self.assertEqual(commit.get_hash_value(), "8edae24a6668acbf59192c514319b54f47c97943")
+         
         
     def test_get_subbranch_view(self):
         view=gwlib.grepo.get_subbranch_view('../testrep', 'd3be8125c4f0f1134ed741c7c212b22e1c79d776', '026176a9fccbe01acd1995fc26db7aa1ae6e8297')

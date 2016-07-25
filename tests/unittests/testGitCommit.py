@@ -36,7 +36,11 @@ class GitCommitTester(unittest.TestCase):
         commit=self.git.get_commit('ff668655dce190ec642d3997fcefb37fa4a83dcb')
         parent=commit.get_parent()
         self.assertEqual(parent.get_hash_value(), 'a9a2b56fe46fa25b303cb08b24cfee11c0241003')
-
+     
+    def test_parent_commit_of_merge(self):    
+        commit=self.git.get_commit('ad0d8206159de6955f18144e753f281a0f22124a')
+        parent=commit.get_parent()
+        self.assertEqual(parent.get_hash_value(), '8edae24a6668acbf59192c514319b54f47c97943')
 
     def test_parent_first_commit(self):
         commit=self.git.get_commit('d3be8125c4f0f1134ed741c7c212b22e1c79d776')
