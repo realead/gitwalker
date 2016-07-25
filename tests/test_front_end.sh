@@ -44,6 +44,8 @@ verify_error_output "-s scripts/dreamer_not_in_fileB.sh -l 3412322" "if branch n
 
 
 verify_error_output "-s scripts/dreamer_not_in_fileB.sh -l ff668655dce190 -f 026176a9fc" "Error: first_hash is not a predecessor of the last_hash" not_on_the same_line
+verify_error_output "-s scripts/dreamer_not_in_fileB.sh -f 026176a9fcc -l 5f7cef49c21 -a binsearch" "Error: Already the base is broken, cannot do binary search" base_already_broken 
+verify_error_output "-s scripts/dreamer_not_in_fileB.sh -f 74ef69cfef -l 97b8bf131d -a binsearch" "Error: The last commit is Ok, cannot do binary search" no_one_broken
 
 
 
@@ -63,10 +65,13 @@ verify_std_output "-s scripts/dreamer_not_in_fileB.sh -b alternative_fileB  -a b
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f d3be8125c4f -l 83a345517f6  -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" binsearch_last_commit_broken 
 verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 97b8bf131de4 -l 026176a9fccb -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" binsearch_two_last_broken 
 
+verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 83a345517f6 -l 5f7cef49c21 -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" first_broken 
+verify_std_output "-s scripts/dreamer_not_in_fileB.sh -f 83a345517f6 -l 83a345517f6 -a binsearch" "broken with commit: 83a345517f68a451cedd56e7373a8436f6645e4c : actually I did" only_one_broken
 
 
 
-
+#clean up - setting test repository to the master again:
+git -C $GIT_REP checkout master
 
 
 
