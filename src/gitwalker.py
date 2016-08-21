@@ -1,4 +1,5 @@
-import sh
+
+import subprocess
 from gwlib.gerror import GitWalkerError
 
 class Executor:
@@ -7,13 +8,17 @@ class Executor:
     
     def __call__(self):
         if self.path.endswith(".sh"):
-            output=sh.sh(self.path, _ok_code=[0,1])
+            #do not leak to out/err the ouputs of subprocess
+            df = subprocess.Popen(["sh", self.path], stdout=subprocess.PIPE,  stderr=subprocess.PIPE)   
+            return_value=df.wait()
         elif self.path.endswith(".py"):
-            output=sh.python(self.path, _ok_code=[0,1])
+            #do not leak to out/err the ouputs of subprocess
+            df = subprocess.Popen(["python", self.path], stdout=subprocess.PIPE,  stderr=subprocess.PIPE)   
+            return_value=df.wait()
         else:
             raise GitWalkerError("Unknown script language. Only *.sh and *.py can be processed")
                
-        if output.exit_code==0:
+        if return_value==0:
             return True
         return False
 
