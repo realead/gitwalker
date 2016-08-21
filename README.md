@@ -14,7 +14,6 @@ automatization script for git
 ## Prerequisites
    1. python 2.7
    2. git (tested with 2.9.2, but should work with every git version)
-   3. python sh module (https://amoffat.github.io/sh/)
 
 ## Usage
 
