@@ -11,7 +11,7 @@ from gwlib.gerror import GitWalkerError
 
 
 import os.path
-import sh
+import gwlib.processcall as pc
 
 def fileC_exists():
     return os.path.isfile("../testrep/fileC.txt") 
@@ -24,8 +24,8 @@ class ShExistenceChecker:
         self.path=file_path
         
     def __call__(self):
-        output=sh.sh(["-x", "scripts/check_file_exists.sh", self.path], _ok_code=[0,1])
-        if output.exit_code==0:
+        output=pc.execute_process(["sh","-x", "scripts/check_file_exists.sh", self.path], ok_code=[0,1])
+        if output.returncode==0:
             return True
         return False
        
@@ -72,8 +72,8 @@ class ShTextNotExistsChecker:
         self.string=searched_string
         
     def __call__(self):
-        output=sh.sh(["scripts/line_in_file_exists.sh", self.path, self.string], _ok_code=[0,1])
-        if output.exit_code==0:
+        output=pc.execute_process(["sh","-x", "scripts/line_in_file_exists.sh", self.path, self.string], ok_code=[0,1])
+        if output.returncode==0:
             return False
         return True       
        
