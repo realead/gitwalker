@@ -1,21 +1,24 @@
-import sh
+import subprocess
 
 from gcommit import GitCommit
 from gbranch import GitBranchView
 from gerror import GitWalkerError
 
+def my_git_command(parameters):
+    df = subprocess.Popen(["git"]+parameters, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)        
+    output, err = df.communicate()
+    lines=output.split("\n")
+    return [line.strip() for line in lines if line]
+    
 class GitRepository:
     def __init__(self, path):
         self.git_rep=["-C", path]
     
     
     def __run_command(self, command, capture_output=False):
-        #to see why _tty_out=False go to stackoverflow.com/a/36252138/325365 
-        call=sh.git(self.git_rep+command, _tty_out=False)
+        call_output=my_git_command(self.git_rep+command)
         if capture_output:
-            #strip to get rid of \n
-            #str to get read of u'...'
-            return [str(line.strip()) for line in call]
+            return call_output
         
     def get_commit(self, commit_hash):
         if commit_hash:
@@ -48,9 +51,9 @@ class GitRepository:
         
     def get_parent_commit(self, commit_hash):
         command=["log", "--format=%P", "-n", "1", commit_hash]
-        parent_hashes=self.__run_command(command, capture_output=True)[0]
+        parent_hashes=self.__run_command(command, capture_output=True)
         if parent_hashes:
-            first_parent_hash=parent_hashes.split()[0]#for merged commit take just the first parent
+            first_parent_hash=parent_hashes[0].split()[0]#for merged commit take just the first parent
         else:
             first_parent_hash=""
         return self.get_commit(first_parent_hash)
