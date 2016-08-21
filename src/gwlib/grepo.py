@@ -1,14 +1,9 @@
-import subprocess
+import processcall as pc
 
 from gcommit import GitCommit
 from gbranch import GitBranchView
 from gerror import GitWalkerError
 
-def my_git_command(parameters):
-    df = subprocess.Popen(["git"]+parameters, stdout=subprocess.PIPE,  stderr=subprocess.PIPE)        
-    output, err = df.communicate()
-    lines=output.split("\n")
-    return [line.strip() for line in lines if line]
     
 class GitRepository:
     def __init__(self, path):
@@ -16,9 +11,10 @@ class GitRepository:
     
     
     def __run_command(self, command, capture_output=False):
-        call_output=my_git_command(self.git_rep+command)
+        output=pc.execute_process(["git"]+self.git_rep+command).stdout
         if capture_output:
-            return call_output
+            lines=output.split("\n")
+            return [line.strip() for line in lines if line]
         
     def get_commit(self, commit_hash):
         if commit_hash:
